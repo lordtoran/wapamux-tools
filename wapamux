@@ -116,8 +116,10 @@ if [ "$1" ]; then
       ;;
     "--scan-headers" | "-s")
       [ "$2" ] && ext="$2"
+
       filesexist
       scanheaders "Metadata is not consistent across files. Try wapasplit for a multipass mux."
+
       exit 0
       ;;
     *)
@@ -155,6 +157,7 @@ if [ -f $optsfile ]; then
   echo
   
   opts="@$tmpfile"
+
   # Temporarily filter filenames and UI language out of the options.
   # This will fail with trailing spaces, as it matches to the end of line.
   sed -e '/--ui-language$/,+1d' -e '/--output$/,+1d' -e '/^($/,+2d' $optsfile > $tmpfile

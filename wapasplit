@@ -114,8 +114,10 @@ if [ "$1" ]; then
       ;;
     "--scanonly" | "-s")
       [ "$2" ] && ext="$2"
+
       filesexist
       scanheaders
+
       echo "These would be the directories created in a normal run."
       echo
       exit 0
@@ -127,7 +129,6 @@ if [ "$1" ]; then
 fi
 
 filesexist
-
 scanheaders
 
 echo "Would you like to copy or move the files to subdirectories now [C/m/q/?]?"
