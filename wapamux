@@ -1,0 +1,193 @@
+#!/bin/sh
+
+# wapamux
+#
+# Remux all video files of a specific type found in the current directory into
+# a subdirectory. If a videos.opt file is found in the current directory, a
+# sanitized version of it is passed to mkvmerge as an options file.
+#
+# Requires: mkvmerge (from the mkvtoolnix package), sed.
+#
+# This script is in the public domain and was originally written by
+# Dennis Murczak <https://github.com/lordtoran/>
+
+
+#### GLOBALS ####
+
+ext="mkv"
+
+opts=
+optsfile="series.opt"
+tmpfile="$optsfile.~~~"
+outdir="__converted__"
+
+
+#### FUNCTIONS ####
+
+usage () {
+  echo "Usage: $(basename $0) [-s | --scan-headers] [fileext]"
+  echo "
+Remuxes all files ending in .fileext found in the current directory into a
+subdirectory '$outdir'. fileext defaults to 'mkv'.
+
+If a file '$optsfile' is found in the current directory,
+it is assumed that the directory contains a TV or anime series. In this case
+a sanitized version of the option file (sans input and output filespecs) is
+passed to mkvmerge for each video file. Header metadata has to match across
+files for this to work, and an according safeguard check is done.
+
+Without an option file, a plain convert/remux without verification or altering
+of file metadata is done.
+
+Prepending the -s or --scan-headers option only does the metadata
+verification pass, regardless of the presence of '$optsfile'.
+"
+  exit 0
+}
+
+commandexists () {
+  command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && exit 1; }
+}
+
+scanheaders () {
+  # Check uniformity of MKV headers and error out on first mismatch
+
+  local mkvi=
+  local mkvi_old=
+
+  echo "Starting metadata scan of all .$ext files."
+  echo
+
+  for f in *.$ext; do
+    echo "Checking headers: $f"
+
+    # Compare the order, type, language and codec (in case of multiple same
+    # language tracks) of the video file's tracks to the last iteration.
+    # "id": (track ID) as a grep pattern will also catch attached subtitle
+    # fonts, which are often mixed up inbetween files, so we use "number":
+    # (the track number) instead.
+    mkvi=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ')
+
+    [ "$?" -ne "0" ] && { echo "Not a supported video file: $f" && exit 1; }
+    
+    if [ -n "$mkvi_old" ]; then
+      if [ "$mkvi" != "$mkvi_old" ]; then
+      echo
+      echo "Metadata mismatch: $f"
+      echo $1
+      echo
+      
+      rm -f $tmpfile
+      
+      exit 1
+      fi
+    fi
+
+  mkvi_old=$mkvi
+  done
+  
+  echo
+  echo "Metadata seems consistent across all files."
+  echo
+}
+
+filesexist () {
+  files=$(ls *.$ext) 2> /dev/null
+
+  if [ ! "$files" ]; then
+    echo "No matching files found for *.$ext! Exiting."
+    echo
+    echo "For usage information, try -h or --help."
+    echo
+    exit 1
+  fi
+}
+
+
+#### MAIN ####
+
+commandexists "mkvmerge" "Please install mkvtoolnix."
+commandexists "sed" "Sed is love, sed is life."
+
+if [ "$1" ]; then
+  case $1 in
+    "--help" | "-h" )
+      usage
+      ;;
+    "--scan-headers" | "-s")
+      [ "$2" ] && ext="$2"
+      filesexist
+      scanheaders "Metadata is not consistent across files. Try wapasplit for a multipass mux."
+      exit 0
+      ;;
+    *)
+      ext="$1"
+      ;;
+  esac
+fi
+
+# Catch CTRL+C
+trap "rm -f $tmpfile; exit" HUP INT TERM
+
+filesexist
+
+echo "Preparing to remux all .$ext files to a subdirectory. Continue [Y/n/?]?"
+read -r ans
+
+case $ans in
+  "y" | "Y" | "")
+    break
+    ;;
+  "?")
+    usage
+    ;;
+  *)
+    echo "Aborting."
+    echo
+    exit 0
+    ;;
+esac
+
+# If videos.opt is present, assume the directory contains a series and header
+# scan the video files first.
+if [ -f $optsfile ]; then
+  echo "$optsfile found. Assuming the directory contains a TV or anime series."
+  echo
+  
+  opts="@$tmpfile"
+  # Temporarily filter filenames and UI language out of the options.
+  # This will fail with trailing spaces, as it matches to the end of line.
+  sed -e '/--ui-language$/,+1d' -e '/--output$/,+1d' -e '/^($/,+2d' $optsfile > $tmpfile
+
+  scanheaders "Cannot apply options; consider doing multiple passes instead. Exiting."
+
+  echo "Start remux now [Y/n]?"
+  read -r ans
+
+  case $ans in
+    "y" | "Y" | "")
+      break
+      ;;
+    *)
+      echo "Aborting."
+      echo
+      exit 0
+      ;;
+  esac
+fi
+
+mkdir -p $outdir
+
+for f in *.$ext; do
+
+  fb=$(basename "$f" .$ext)
+  mkvmerge --identify "$f"
+  mkvmerge --output "$outdir/$fb.mkv" $opts "$f"
+
+  echo
+done
+
+rm -f $tmpfile
+
+echo "All done!"
+echo

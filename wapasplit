@@ -1,0 +1,155 @@
+#!/bin/sh
+
+# wapasplit
+#
+# Split TV episodes in current directory into subdirectories according to
+# their metadata checksum.
+#
+# Requires: mkvmerge (from the mkvtoolnix package), rsync.
+#
+# This script is in the public domain and was originally written by
+# Dennis Murczak <https://github.com/lordtoran/>
+
+
+#### GLOBALS ####
+
+ext="mkv"
+
+#copycmd="cp -ip"
+copycmd="rsync -ahP --append-verify"
+movecmd="mv -i"
+fileopcmd=
+
+
+#### FUNCTIONS ####
+
+usage () {
+  echo "Usage: $(basename $0) [-s | --scanonly] [fileext]"
+  echo "
+Splits all video files ending in .fileext found in the current directory into
+subdirectories, based on their metadata checksum. fileext defaults to 'mkv'.
+
+If the -s or --scanonly option is given, only the checksum scan is carried
+out and a summary of which directories would be created is displayed.
+
+Rsync is used for incremental copying, so partial runs can be resumed.
+"
+  exit 0
+}
+
+commandexists () {
+  command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && exit 1; }
+}
+
+scanheaders () {
+  local mkvck=
+  local chklist=
+  local uniqlist=
+
+  echo "Starting metadata checksumming of all .$ext files."
+  echo
+
+  for f in *.$ext; do
+    echo "Obtaining metadata: $f"
+
+    mkvck=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ' | cksum | cut -f 1 -d " ")
+    chklist=$(echo $chklist; echo $mkvck)
+    echo "Checksum is $mkvck"
+  done
+
+  uniqlist=$( { for i in $chklist; do
+    echo $i
+  done; } | sort | uniq )
+
+  echo
+  echo "$(echo $uniqlist | wc -w) unique metadata checksum(s) found:"
+  echo $uniqlist
+  echo
+}
+
+processfiles () {
+  local mkvck=
+  local dirname=
+  
+  for f in *.$ext; do
+    mkvmerge --identify "$f"
+    mkvck=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ' | cksum | cut -f 1 -d " ")
+
+    dirname="__"$mkvck"__"
+    echo "Copying/moving to subdirectory '$dirname'"
+    mkdir -p $dirname
+
+    $fileopcmd $f $dirname/
+    echo
+  done
+
+  echo "All done!"
+  echo
+  
+  exit 0
+}
+
+filesexist () {
+  files=$(ls *.$ext) 2> /dev/null
+
+  if [ ! "$files" ]; then
+    echo "No matching files found for *.$ext! Exiting."
+    echo
+    echo "For usage information, try -h or --help."
+    echo
+    exit 1
+  fi
+}
+
+
+#### MAIN ####
+
+commandexists "mkvmerge" "Please install mkvtoolnix."
+commandexists "rsync" "Rsync is required for incremental copying, please install it."
+
+if [ "$1" ]; then
+  case $1 in
+    "--help" | "-h" )
+      usage
+      ;;
+    "--scanonly" | "-s")
+      [ "$2" ] && ext="$2"
+      filesexist
+      scanheaders
+      echo "These would be the directories created in a normal run."
+      echo
+      exit 0
+      ;;
+    *)
+      ext="$1"
+      ;;
+  esac
+fi
+
+filesexist
+
+scanheaders
+
+echo "Would you like to copy or move the files to subdirectories now [C/m/q/?]?"
+read -r ans
+
+case $ans in
+  "c" | "C" | "")
+    fileopcmd=$copycmd
+    break
+    ;;
+  "m" | "M" | "")
+    fileopcmd=$movecmd
+    break
+    ;;
+  "?")
+    usage
+    ;;
+  *)
+    echo "Aborting."
+    echo
+    exit 0
+    ;;
+esac
+
+processfiles

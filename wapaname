@@ -1,0 +1,103 @@
+#!/bin/sh
+
+# wapaname
+#
+# Auto-rename TV episodes in current directory using tvnamer.
+#
+# Requires: tvnamer.
+#
+# This script is in the public domain and was originally written by
+# Dennis Murczak <https://github.com/lordtoran/>
+
+
+#### GLOBALS ####
+
+configfile="$(echo ~)/.config/tvnamer/tvnamerrc"
+
+confparm=
+nameparm=
+idparm=
+
+
+#### FUNCTIONS ####
+
+usage () {
+    echo "Usage: $(basename $0) [series_name] [tvdb_series_id]"
+    echo "
+Auto-renames all TV episodes in the current directory using tvnamer. File
+names have to already be in a Kodi-compatible sNNeNN, NNxNN or equivalent
+format.
+
+Tvnamer will ask a few interactive questions on launch in order to keep the
+mess-up potential minimal.
+
+If no parameters are given, the series name is derived from the directory
+name. A single parameter is interpreted as a series name. If tvnamer is unable
+to find a series or a specific dub but you know it has an entry in
+thetvdb.com, you can provide the numeric series ID as a second parameter.
+
+To see non-English dubs in the first place, you may have to create a
+configuration file using 'tvnamer -s' and set the language code. This file,
+provided it exists, is expected in the following location:
+
+$configfile
+"
+
+  exit 0
+}
+
+commandexists () {
+  command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && exit 1; }
+}
+
+
+#### MAIN ####
+
+commandexists "tvnamer" "Please install tvnamer."
+
+case $1 in
+  "--help" | "-h" )
+    usage
+    ;;
+esac
+
+# Parameter checkup
+if [ -f $configfile ]; then
+  confparm="--config=$configfile"
+fi
+
+if [ $# -eq 0 ]; then
+  nameparm="--name="$(basename "$(pwd)")""
+elif [ $# -eq 1 ]; then
+  nameparm="--name=\"$1\""
+elif [ $# -eq 2 ]; then
+  nameparm="--name=\"$1\""
+  idparm="--series-id=$2"
+else
+  echo "Invalid number of parameters! Try -h or --help."
+  echo
+  exit 1
+fi
+
+echo "Preparing to launch tvnamer for current dir. Continue [Y/n/?]?"
+read -r ans
+
+case $ans in
+  "y" | "Y" | "")
+    break
+    ;;
+  "?")
+    usage
+    ;;
+  *)
+    echo "Aborting."
+    echo
+    exit 0
+    ;;
+esac
+
+tvnamer "$confparm" "$nameparm" "$idparm" .
+
+echo
+echo "All done!"
+echo
