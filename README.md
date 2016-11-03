@@ -80,8 +80,8 @@ language. Just in line with that, I was utterly unable to come up with a more
 creative pun.
 
 
-[1]: https://mkvtoolnix.download
+[1]: https://github.com/dbr/tvnamer
 
-[2]: https://github.com/dbr/tvnamer
+[2]: https://mkvtoolnix.download
 
 [3]: https://rsync.samba.org/
