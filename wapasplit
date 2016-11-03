@@ -45,6 +45,7 @@ scanheaders () {
   local mkvck=
   local chklist=
   local uniqlist=
+  local uniqcnt=
 
   echo "Starting metadata checksumming of all .$ext files."
   echo
@@ -62,9 +63,19 @@ scanheaders () {
   done; } | sort | uniq )
 
   echo
-  echo "$(echo $uniqlist | wc -w) unique metadata checksum(s) found:"
-  echo $uniqlist
-  echo
+  
+  uniqcnt=$(echo $uniqlist | wc -w)
+
+  if [ $uniqcnt -eq "1" ]; then
+    echo "All files have a consistent metadata checksum: $uniqlist."
+    echo "No splitting necessary. Exiting."
+    echo
+    exit 0
+  else
+    echo "$uniqcnt unique metadata checksum(s) found:"
+    echo $uniqlist
+    echo
+  fi
 }
 
 processfiles () {
