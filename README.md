@@ -49,7 +49,7 @@ For more detailed information, run the the scripts with the ```-h``` or
 
 Auto-renames all TV episodes in the current directory using tvnamer. File
 names have to already be in a Kodi-compatible ```sNNeNN```, ```NNxNN``` or
-equivalent format; just the season and episode number is already sufficient
+equivalent format; just the season and episode number is already sufficient.
 Should autodetection by means of the directory name fail, a series name can be
 enforced. Should that fail too, a TVDB id can additionally be given.
 
@@ -66,8 +66,28 @@ just as it would before a remux with an option file.
 Splits all video files ending in ```.fileext``` found in the current directory
 into subdirectories based on their metadata checksum. This is handy with
 source files from different encodes. Files can either be rsync-copied (more
-secure) or moved. fileext defaults to ```mkv```. ```-s``` only performs the
-metadata CRCs and displays which directories would be created.
+secure, plus resumeable) or moved. ```fileext``` defaults to ```mkv```.
+```-s``` only performs the metadata CRCs and displays which directories would
+be created.
+
+
+### Example workflow ###
+
+In a common scenario ```wapaname``` would be called after naming the video
+files in a way that tvnamer can parse (one series/season per directory, which
+is named after the series, sNNeNN or NNxNN file numbering). The result would
+be numbered video files with episode names.
+
+Next a metadata consistency check can be done using ```wapasplit -s``` or
+```wapamux -s```. If the metadata turns out inconsistent across files, one can
+either manually perform multiple wapamux passes or let wapasplit take care of
+creating a directory subtree and copying/moving the files there.
+
+Finally one would edit the header metadata as needed for each subset (usually
+by means of ```mkvtoolnix-gui```), export the changes as option files, then
+remux using wapamux. There is nothing to worry about filenames stored in the
+option file(s), by the way—wapamux will substitute them with the currently
+processed file during remuxing.
 
 
 ### FAQ ###
