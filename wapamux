@@ -3,7 +3,7 @@
 # wapamux
 #
 # Remux all video files of a specific type found in the current directory into
-# a subdirectory. If a videos.opt file is found in the current directory, a
+# a subdirectory. If a series.opt file is found in the current directory, a
 # sanitized version of it is passed to mkvmerge as an options file.
 #
 # Requires: mkvmerge (from the mkvtoolnix package), sed.
@@ -148,7 +148,7 @@ case $ans in
     ;;
 esac
 
-# If videos.opt is present, assume the directory contains a series and header
+# If series.opt is present, assume the directory contains a series and header
 # scan the video files first.
 if [ -f $optsfile ]; then
   echo "$optsfile found. Assuming the directory contains a TV or anime series."
