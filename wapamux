@@ -118,7 +118,7 @@ if [ "$1" ]; then
       [ "$2" ] && ext="$2"
 
       filesexist
-      scanheaders "Metadata is not consistent across files. Try wapasplit for a multipass mux."
+      scanheaders "Metadata is not consistent across files. Try wapasplit for a multipass remux."
 
       exit 0
       ;;
