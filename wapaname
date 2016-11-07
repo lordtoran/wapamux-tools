@@ -98,6 +98,8 @@ esac
 
 tvnamer "$confparm" "$nameparm" "$idparm" .
 
+[ "$?" -ne "0" ] && { echo "There was a problem with tvnamer. Aborting." && echo && exit 1; }
+
 echo
 echo "All done!"
 echo

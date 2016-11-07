@@ -2,4 +2,4 @@ To implement and test in the future:
 
 * Install/uninstall scripts
 * Package build scripts
-* More error checking.
+* Find a way around the temp file without using process substitution bashisms.

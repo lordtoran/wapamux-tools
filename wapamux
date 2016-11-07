@@ -41,12 +41,16 @@ of file metadata is done.
 
 Prepending the -s or --scan-headers option only does the metadata
 verification pass, regardless of the presence of '$optsfile'.
+
+An exit status of 0 is returned on an error-free run, 1 in case of a file-
+related problem or failure of an external command, 2 if the metadata
+consistency check is unsuccessful.
 "
   exit 0
 }
 
 commandexists () {
-  command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && exit 1; }
+  command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && echo && exit 1; }
 }
 
 scanheaders () {
@@ -68,7 +72,7 @@ scanheaders () {
     # (the track number) instead.
     mkvi=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ')
 
-    [ "$?" -ne "0" ] && { echo "Not a supported video file: $f" && exit 1; }
+    [ "$?" -ne "0" ] && { echo "Not a supported video file: $f" && echo && exit 1; }
     
     if [ -n "$mkvi_old" ]; then
       if [ "$mkvi" != "$mkvi_old" ]; then
@@ -79,7 +83,7 @@ scanheaders () {
       
       rm -f $tmpfile
       
-      exit 1
+      exit 2
       fi
     fi
 
@@ -128,7 +132,7 @@ if [ "$1" ]; then
   esac
 fi
 
-# Catch CTRL+C
+# Catch CTRL+C & friends so we don’t leave a temp file.
 trap "rm -f $tmpfile; exit" HUP INT TERM
 
 filesexist
@@ -174,6 +178,8 @@ if [ -f $optsfile ]; then
     *)
       echo "Aborting."
       echo
+      
+      rm -f $tmpfile
       exit 0
       ;;
   esac
@@ -187,6 +193,15 @@ for f in *.$ext; do
   mkvmerge --identify "$f"
   mkvmerge --output "$outdir/$fb.mkv" $opts "$f"
 
+  # Some error checking, just in case
+  if [ "$?" -ne "0" ]; then
+    echo "There was a problem with mkvmerge. Aborting."
+    echo
+
+    rm -f $tmpfile
+    exit 1
+  fi
+  
   echo
 done
 

@@ -33,12 +33,16 @@ If the -s or --scanonly option is given, only the checksum scan is carried
 out and a summary of which directories would be created is displayed.
 
 Rsync is used for incremental copying, so partial runs can be resumed.
+
+An exit status of 0 is returned on an error-free run, 1 in case of a file-
+related problem or failure of an external command, 2 if the metadata
+consistency check (with -s) is unsuccessful.
 "
   exit 0
 }
 
 commandexists () {
-  command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && exit 1; }
+  command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && echo && exit 1; }
 }
 
 scanheaders () {
@@ -54,6 +58,9 @@ scanheaders () {
     echo "Obtaining metadata: $f"
 
     mkvck=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ' | cksum | cut -f 1 -d " ")
+    
+    [ "$?" -ne "0" ] && { echo "Not a supported video file: $f" && echo && exit 1; }
+
     chklist=$(echo $chklist; echo $mkvck)
     echo "Checksum is $mkvck"
   done
@@ -70,11 +77,14 @@ scanheaders () {
     echo "All files have a consistent metadata checksum: $uniqlist."
     echo "No splitting necessary. Exiting."
     echo
+
     exit 0
   else
     echo "$uniqcnt unique metadata checksum(s) found:"
     echo $uniqlist
     echo
+    
+    [ "$uniqcnt" -gt "1" ] && return 2
   fi
 }
 
@@ -86,11 +96,15 @@ processfiles () {
     mkvmerge --identify "$f"
     mkvck=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ' | cksum | cut -f 1 -d " ")
 
+    [ "$?" -ne "0" ] && { echo "There was a problem with mkvmerge. Aborting." && echo && exit 1; }
+
     dirname="__"$mkvck"__"
     echo "Copying/moving to subdirectory '$dirname'"
     mkdir -p $dirname
 
     $fileopcmd $f $dirname/
+    [ "$?" -ne "0" ] && { echo "Error on copy/move. Aborting." && echo && exit 1; }
+
     echo
   done
 
@@ -128,10 +142,11 @@ if [ "$1" ]; then
 
       filesexist
       scanheaders
-
+      ret=$?
+      
       echo "These would be the directories created in a normal run."
       echo
-      exit 0
+      exit $ret
       ;;
     *)
       ext="$1"
