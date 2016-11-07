@@ -92,12 +92,29 @@ processed file during remuxing.
 
 ### FAQ ###
 
-“wapamux”?
+*“wapamux”?*
 
 It is an allusion to “wapanese”, a somewhat derogatory term for a japanophile
 person with limited knowledge and a warped notion of Japanese culture and
 language. Just in line with that, I was utterly unable to come up with a more
 creative pun.
+
+*When remuxing, can I also move tracks around or remove some of them in
+addition to setting header data?*
+
+wapamux uses mkvmerge as its backend so this is perfectly fine. The option
+file (series.opt) that keeps track of the changes is not touched except for
+filename sanitation required for batch mode.
+
+*wapaname errors out with “tvnamer: error: No valid files were supplied”*
+
+Either you tried running the script on a movie, or tvnamer is unable to match
+the episode numbers in the filenames. This can happen with Unicode characters
+around or next to episode numbers, for example if a (typographically correct)
+dash is used in place of a minus sign. Unfortunately, tvnamer seems to be
+subpar in the unicode and international department, and If you could reproduce
+the issue and file a bug report with the maintainer, I would be very happy
+indeed.
 
 
 [1]: https://github.com/dbr/tvnamer
