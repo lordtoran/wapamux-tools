@@ -1,0 +1,20 @@
+wapamux-tools (0.2ubuntu1~1.gbpf389dd) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @f389ddd9c79dbca670345919fadf8e2466291e2c **
+
+  [ lordtoran ]
+  * Initial commit
+  * Initial commit
+  * Some markdown hacking
+  * Linkfix
+  * README additions
+  * Updating obsolete file name in comments
+  * Code prettification
+  * Special handling when all metadata is consistent added
+  * 'mux' --> 'remux'
+  * DONE: More error checking, bugfix for tempfile not removed when aborting late
+  * FAQ expanded
+
+  [ Dennis Murczak ]
+
+ -- Dennis Murczak <lordtoran@users.noreply.github.com>  Wed, 09 Nov 2016 13:09:43 +0100

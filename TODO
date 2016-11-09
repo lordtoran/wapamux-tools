@@ -1,5 +1,4 @@
 To implement and test in the future:
 
-* Install/uninstall scripts
-* Package build scripts
+* Nicer Debian packaging
 * Find a way around the temp file without using process substitution bashisms.

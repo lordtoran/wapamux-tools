@@ -1,0 +1,87 @@
+#!/bin/sh
+
+echo "Importing global declarations …"
+
+. ./globals
+
+[ "$?" -ne "0" ] && { echo "  … which aren’t there. Is your local git tree ok?" && echo && exit 1; }
+
+
+# Globals
+
+origdir=$(realpath $(pwd))
+sourcedir=$(dirname $origdir)
+builddir=$origdir/$APPNAME-$APPVER
+debiandir="$builddir/debian"
+
+
+# Functions
+
+escapepaths () { echo $(echo $1) | sed 's/\//\\\//g'; }
+
+
+# Main
+
+echo
+
+./clean-debian
+
+mkdir -p $builddir
+
+echo "Copying …"
+
+cp -f $sourcedir/wapa* $builddir
+
+echo
+echo "Creating debian tree …"
+echo
+
+cd $builddir
+dh_make --createorig --copyright custom --copyrightfile $sourcedir/UNLICENSE --email $MAINTAINERADDY --indep --yes
+
+cd $debiandir
+
+echo "More cleanup …"
+echo
+
+rm -f *.ex *.EX README.debian README.source
+
+cp -f "$sourcedir/UNLICENSE" "$debiandir/copyright"
+cp -f "$sourcedir/README.md" "$debiandir/README.Debian"
+cp -f "$sourcedir/NEWS" $debiandir
+cp -f "$sourcedir/TODO" $debiandir
+
+cp -f "$origdir/changelog" $debiandir
+
+echo "Building control files …"
+echo
+
+sed -i "s/^Section: .*/Section: video/" control
+sed -i "s/^Homepage: .*/Homepage: $(escapepaths $HOMEPAGE)/" control
+sed -i "s/^Depends: .*/Depends: $DEPENDS/" control
+# FIXME: Make $DESCRIPTION work with sed replace instead of replacing to EOF
+sed -i '/^Description: .*/,$d' control
+echo "Description: $DESCRIPTION" >> control
+
+echo "wapa* usr/bin/" > install
+
+echo "Building deb package …"
+echo
+
+cd $builddir
+
+if [ -z "$DEB_SIGN_KEYID" ]; then
+  echo 'DEB_SIGN_KEYID not set, creating unsigned package.'
+  echo
+  dpkg-buildpackage -us -uc
+else
+  echo 'Creating signed package using DEB_SIGN_KEYID: Key ID '$DEB_SIGN_KEYID
+  echo
+  dpkg-buildpackage
+fi
+
+cd $origdir
+
+echo
+echo "All done!"
+echo

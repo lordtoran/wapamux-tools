@@ -1,0 +1,20 @@
+# Global declarations for packaging
+
+APPNAME="wapamux-tools"
+APPVER="0.2"
+
+MAINTAINERADDY="lordtoran@users.noreply.github.com"
+HOMEPAGE="https://github.com/lordtoran/wapamux-tools"
+
+DEPENDS="mkvtoolnix, tvnamer, rsync"
+
+DESCRIPTION="Script toolchain for mass naming and remuxing of anime and TV episodes
+ wapamux-tools provides a set of handy shell scripts for making the mass naming and tagging of anime and TV episodes a lot easier.
+ .
+  * wapaname: A semi-automated frontend for tvnamer.
+  * wapamux: Converts or remuxes (based on an mkvmerge option file) video files into a subdirectory.
+  * wapasplit: Splits a set of video files into subdirectories by metadata CRC.
+ .
+ Output is always in Matroska (.mkv) format.
+ .
+ Note that the scripts are deliberately intended for per-directory semi-automation only, without a true batch mode. The motivation behind this is the sensible handling of anime seasons put together from different encodes."

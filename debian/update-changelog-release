@@ -1,0 +1,7 @@
+#!/bin/sh
+
+curdir=$(realpath $(pwd))
+
+cd ..
+gbp dch --auto --release --git-author --new-version=$1
+cd $curdir

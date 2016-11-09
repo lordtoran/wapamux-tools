@@ -1,0 +1,22 @@
+#!/bin/sh
+
+. ./globals
+
+[ "$?" -ne "0" ] && { echo "Globals file not found. Is your local git tree ok?" && echo && exit 1; }
+
+
+# Globals
+
+origdir=$(realpath $(pwd))
+builddir="$origdir/$APPNAME-$APPVER"
+
+
+# Main
+
+echo "Cleaning up …"
+
+rm -rf $builddir $origdir/$APPNAME_*.*
+
+echo
+echo "Ok."
+echo
