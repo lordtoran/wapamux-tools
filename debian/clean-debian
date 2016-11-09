@@ -8,7 +8,10 @@
 # Globals
 
 origdir=$(realpath $(pwd))
-builddir="$origdir/$APPNAME-$APPVER"
+
+CHLVER=$(dpkg-parsechangelog --file $origdir/changelog --show-field Version)
+
+builddir="$origdir/$APPNAME-$CHLVER"
 
 
 # Main

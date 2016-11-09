@@ -1,6 +1,4 @@
-wapamux-tools (0.2ubuntu1~1.gbpf389dd) UNRELEASED; urgency=medium
-
-  ** SNAPSHOT build @f389ddd9c79dbca670345919fadf8e2466291e2c **
+wapamux-tools (0.2ubuntu1) yakkety; urgency=medium
 
   [ lordtoran ]
   * Initial commit
@@ -14,7 +12,8 @@ wapamux-tools (0.2ubuntu1~1.gbpf389dd) UNRELEASED; urgency=medium
   * 'mux' --> 'remux'
   * DONE: More error checking, bugfix for tempfile not removed when aborting late
   * FAQ expanded
+  * Adding Debian packaging and a NEWS file.
 
   [ Dennis Murczak ]
 
- -- Dennis Murczak <lordtoran@users.noreply.github.com>  Wed, 09 Nov 2016 13:09:43 +0100
+ -- Dennis Murczak <lordtoran@users.noreply.github.com>  Wed, 09 Nov 2016 13:54:39 +0100
