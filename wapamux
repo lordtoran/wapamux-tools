@@ -15,6 +15,7 @@
 #### GLOBALS ####
 
 ext="mkv"
+forcedext=
 
 opts=
 optsfile="series.opt"
@@ -34,7 +35,8 @@ If a file '$optsfile' is found in the current directory,
 it is assumed that the directory contains a TV or anime series. In this case
 a sanitized version of the option file (sans input and output filespecs) is
 passed to mkvmerge for each video file. Header metadata has to match across
-files for this to work, and an according safeguard check is done.
+files for this to work, and an according safeguard check is done. Also, if an
+option file is present, fileext can be determined automagically.
 
 Without an option file, a plain convert/remux without verification or altering
 of file metadata is done.
@@ -119,7 +121,7 @@ if [ "$1" ]; then
       usage
       ;;
     "--scan-headers" | "-s")
-      [ "$2" ] && ext="$2"
+      [ "$2" ] && { ext="$2" && forcedext=$ext; }
 
       filesexist
       scanheaders "Metadata is not consistent across files. Try wapasplit for a multipass remux."
@@ -128,12 +130,18 @@ if [ "$1" ]; then
       ;;
     *)
       ext="$1"
+      forcedext=$ext
       ;;
   esac
 fi
 
 # Catch CTRL+C & friends so we don’t leave a temp file.
 trap "rm -f $tmpfile; exit" HUP INT TERM
+
+if [ -f $optsfile ]; then
+  optsfileext=$(grep -A1 -e "^($" $optsfile | tr . \\n | tail -n1)
+  [ -z "$forcedext" ] && [ -n "$optsfileext" ] && ext=$optsfileext
+fi
 
 filesexist
 
