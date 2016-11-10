@@ -55,12 +55,30 @@ commandexists () {
   command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && echo && exit 1; }
 }
 
+filesexist () {
+  files=$(ls *.$ext) 2> /dev/null
+
+  if [ ! "$files" ]; then
+    echo "No matching files found for *.$ext! Exiting."
+    echo
+    echo "For usage information, try -h or --help."
+    echo
+    exit 1
+  fi
+}
+
+countfiles () {
+  ls -l *.$ext | wc -l
+}
+
 scanheaders () {
   # Check uniformity of MKV headers and error out on first mismatch
 
   local mkvi=
   local mkvi_old=
 
+  local numfiles=$(countfiles)
+  
   echo "Starting metadata scan of all .$ext files."
   echo
 
@@ -74,7 +92,16 @@ scanheaders () {
     # (the track number) instead.
     mkvi=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ')
 
-    [ "$?" -ne "0" ] && { echo "Not a supported video file: $f" && echo && exit 1; }
+    if [ "$?" -ne "0" ]; then
+      echo "Not a supported video file: $f"
+      echo
+      rm -f $tmpfile
+      exit 1
+    fi
+
+    # FIXME: We have to check for the single-file case inside the loop for now
+    # so mkvmerge --identify can throw an error if the file is corrupt.
+    [ "$numfiles" -eq "1" ] && { echo "Single file: Skipping metadata scan." && echo && return; }
     
     if [ -n "$mkvi_old" ]; then
       if [ "$mkvi" != "$mkvi_old" ]; then
@@ -95,18 +122,6 @@ scanheaders () {
   echo
   echo "Metadata seems consistent across all files."
   echo
-}
-
-filesexist () {
-  files=$(ls *.$ext) 2> /dev/null
-
-  if [ ! "$files" ]; then
-    echo "No matching files found for *.$ext! Exiting."
-    echo
-    echo "For usage information, try -h or --help."
-    echo
-    exit 1
-  fi
 }
 
 

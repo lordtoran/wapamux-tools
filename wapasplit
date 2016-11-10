@@ -45,11 +45,29 @@ commandexists () {
   command -v "$1" > /dev/null || { echo "Required command '$1' not found! $2" && echo && exit 1; }
 }
 
+filesexist () {
+  files=$(ls *.$ext) 2> /dev/null
+
+  if [ ! "$files" ]; then
+    echo "No matching files found for *.$ext! Exiting."
+    echo
+    echo "For usage information, try -h or --help."
+    echo
+    exit 1
+  fi
+}
+
+countfiles () {
+  ls -l *.$ext | wc -l
+}
+
 scanheaders () {
   local mkvck=
   local chklist=
   local uniqlist=
   local uniqcnt=
+
+  local numfiles=$(countfiles)
 
   echo "Starting metadata checksumming of all .$ext files."
   echo
@@ -64,6 +82,8 @@ scanheaders () {
     chklist=$(echo $chklist; echo $mkvck)
     echo "Checksum is $mkvck"
   done
+
+  [ "$numfiles" -eq "1" ] && { echo "Single file scanned." && echo && return; }
 
   uniqlist=$( { for i in $chklist; do
     echo $i
@@ -80,7 +100,7 @@ scanheaders () {
 
     exit 0
   else
-    echo "$uniqcnt unique metadata checksum(s) found:"
+    echo "$uniqcnt unique metadata checksums found:"
     echo $uniqlist
     echo
     
@@ -112,18 +132,6 @@ processfiles () {
   echo
   
   exit 0
-}
-
-filesexist () {
-  files=$(ls *.$ext) 2> /dev/null
-
-  if [ ! "$files" ]; then
-    echo "No matching files found for *.$ext! Exiting."
-    echo
-    echo "For usage information, try -h or --help."
-    echo
-    exit 1
-  fi
 }
 
 
