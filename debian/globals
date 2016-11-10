@@ -1,7 +1,7 @@
 # Global declarations for packaging
 
 APPNAME="wapamux-tools"
-APPVER="0.2"
+APPVER="0.3"
 
 MAINTAINERADDY="lordtoran@users.noreply.github.com"
 HOMEPAGE="https://github.com/lordtoran/wapamux-tools"

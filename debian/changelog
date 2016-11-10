@@ -1,3 +1,11 @@
+wapamux-tools (0.3~1.gbp382f0b) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @382f0b06b6507723c560415e8d3a490d3d766905 **
+
+  * UNRELEASED
+
+ -- Dennis Murczak <lordtoran@users.noreply.github.com>  Thu, 10 Nov 2016 19:28:53 +0100
+
 wapamux-tools (0.2ubuntu1) yakkety; urgency=medium
 
   [ lordtoran ]
