@@ -51,7 +51,7 @@ Auto-renames all TV episodes in the current directory using tvnamer. File
 names have to already be in a Kodi-compatible ```sNNeNN```, ```NNxNN``` or
 equivalent format; just the season and episode number is already sufficient.
 Should autodetection by means of the directory name fail, a series name can be
-enforced. Should that fail too, a TVDB id can additionally be given.
+enforced. Should that fail too, a TVDB ID can additionally be given.
 
     wapamux [-s | --scan-headers] [fileext]
 
@@ -112,7 +112,7 @@ Either you tried running the script on a movie, or tvnamer is unable to match
 the episode numbers in the filenames. This can happen with Unicode characters
 around or next to episode numbers, for example if a (typographically correct)
 dash is used in place of a minus sign. Unfortunately, tvnamer seems to be
-subpar in the unicode and international department, and If you could reproduce
+subpar in the unicode and international department, and if you could reproduce
 the issue and file a bug report with the maintainer, I would be very happy
 indeed.
 
