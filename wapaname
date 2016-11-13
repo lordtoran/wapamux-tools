@@ -36,9 +36,9 @@ name. A single parameter is interpreted as a series name. If tvnamer is unable
 to find a series or a specific dub but you know it has an entry in
 thetvdb.com, you can provide the numeric series ID as a second parameter.
 
-To see non-English dubs in the first place, you may have to create a
-configuration file using 'tvnamer -s' and set the language code. This file,
-provided it exists, is expected in the following location:
+To see non-English dubs in the first place, you may in some cases have to
+create a configuration file using 'tvnamer -s' and set the language code. This
+file, provided it exists, is expected in the following location:
 
 $configfile
 "
@@ -98,7 +98,21 @@ esac
 
 tvnamer "$confparm" "$nameparm" "$idparm" .
 
-[ "$?" -ne "0" ] && { echo "There was a problem with tvnamer. Aborting." && echo && exit 1; }
+case $? in
+  "0")
+    break;
+    ;;
+  "2")
+    echo "It seems tvnamer could not find any valid files in the directory. Aborting."
+    echo
+    exit 1
+    ;;
+  *)
+    echo "There was a problem with tvnamer. Aborting."
+    echo
+    exit 1
+    ;;
+esac
 
 echo
 echo "All done!"
