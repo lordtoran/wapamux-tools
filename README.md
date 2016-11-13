@@ -109,12 +109,10 @@ filename sanitation required for batch mode.
 *wapaname errors out with “tvnamer: error: No valid files were supplied”*
 
 Either you tried running the script on a movie, or tvnamer is unable to match
-the episode numbers in the filenames. This can happen with Unicode characters
-around or next to episode numbers, for example if a (typographically correct)
-dash is used in place of a minus sign. Unfortunately, tvnamer seems to be
-subpar in the unicode and international department, and if you could reproduce
-the issue and file a bug report with the maintainer, I would be very happy
-indeed.
+the episode numbers in the filenames. This can sometimes happen with unicode
+characters around or next to episode numbers, for example if a
+(typographically correct) dash is used in place of a minus sign. Filename
+matching issues should be reported directly to tvnamers's issue tracker[[4]].
 
 
 [1]: https://github.com/dbr/tvnamer
@@ -122,3 +120,5 @@ indeed.
 [2]: https://mkvtoolnix.download
 
 [3]: https://rsync.samba.org/
+
+[4]: https://github.com/dbr/tvnamer/issues
