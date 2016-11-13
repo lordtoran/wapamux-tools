@@ -98,14 +98,10 @@ esac
 
 tvnamer "$confparm" "$nameparm" "$idparm" .
 
+# TODO: Look into tvnamer's exit status, or at least catch its exit messages.
 case $? in
   "0")
     break;
-    ;;
-  "2")
-    echo "It seems tvnamer could not find any valid files in the directory. Aborting."
-    echo
-    exit 1
     ;;
   *)
     echo "There was a problem with tvnamer. Aborting."
