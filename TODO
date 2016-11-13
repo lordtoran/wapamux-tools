@@ -2,3 +2,4 @@ To implement and test in the future:
 
 * Nicer Debian packaging
 * Find a way around the temp file without using process substitution bashisms.
+* Update wapaname to support custom tvnamer config file.
