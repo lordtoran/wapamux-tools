@@ -38,8 +38,8 @@ passed to mkvmerge for each video file. Header metadata has to match across
 files for this to work, and an according safeguard check is done. Also, if an
 option file is present, fileext can be determined automagically.
 
-Without an option file, a plain convert/remux without verification or altering
-of file metadata is done.
+Without an option file, a plain batch convert/remux without verification or
+altering of file metadata is done.
 
 Prepending the -s or --scan-headers option only does the metadata
 verification pass, regardless of the presence of '$optsfile'.
