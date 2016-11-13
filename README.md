@@ -112,7 +112,7 @@ Either you tried running the script on a movie, or tvnamer is unable to match
 the episode numbers in the filenames. This can sometimes happen with unicode
 characters around or next to episode numbers, for example if a
 (typographically correct) dash is used in place of a minus sign. Filename
-matching issues should be reported directly to tvnamers's issue tracker[[4]].
+matching issues should be reported directly to tvnamer's issue tracker[[4]].
 
 
 [1]: https://github.com/dbr/tvnamer
