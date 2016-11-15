@@ -111,8 +111,15 @@ scanheaders () {
 processfiles () {
   local mkvck=
   local dirname=
+
+  local numfiles=$(countfiles)
+  local c="0"
   
   for f in *.$ext; do
+    c=$(($c+1))
+    echo "Processing ($c/$numfiles): $f"
+    echo
+
     mkvmerge --identify "$f"
     mkvck=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ' | cksum | cut -f 1 -d " ")
 
