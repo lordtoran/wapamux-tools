@@ -131,7 +131,6 @@ processfiles () {
   mkdir -p $outdir
 
   for f in *.$ext; do
-
     c=$(($c+1))
     echo "Processing ($c/$numfiles): $f"
     echo
