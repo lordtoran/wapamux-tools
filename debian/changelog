@@ -1,10 +1,22 @@
-wapamux-tools (0.3~1.gbp382f0b) UNRELEASED; urgency=medium
+wapamux-tools (0.3) yakkety; urgency=medium
 
-  ** SNAPSHOT build @382f0b06b6507723c560415e8d3a490d3d766905 **
+  * Bumping version to 0.3
+  * Automagically determine fileext from option file if present
+  * Skip checksumming for single files & another tempfile delete fix.
+  * Spelling
+  * Little wording fix for usage text
+  * Usage updated; more graceful handling of tvnamer exit status
+  * TODO update.
+  * Partially revert graceful exit status handling :-/
+  * Documentation update
+  * Typo
+  * Fixing moving of files to subdirectory.
+  * Refactoring remux loop into function; adding progress counter
+  * Loop formatting
+  * Adding progress counter
+  * Bugfix: Don’t touch the title field in metadata.
 
-  * UNRELEASED
-
- -- Dennis Murczak <lordtoran@users.noreply.github.com>  Thu, 10 Nov 2016 19:28:53 +0100
+ -- Dennis Murczak <lordtoran@users.noreply.github.com>  Tue, 15 Nov 2016 19:16:25 +0100
 
 wapamux-tools (0.2ubuntu1) yakkety; urgency=medium
 
