@@ -18,15 +18,17 @@ ext="mkv"
 forcedext=
 
 opts=
+stripopts=
 optsfile="series.opt"
 tmpfile="$optsfile.~~~"
+
 outdir="__converted__"
 
 
 #### FUNCTIONS ####
 
 usage () {
-  echo "Usage: $(basename $0) [-s | --scan-headers] [fileext]"
+  echo "Usage: $(basename $0) [-s | --scan-headers | -t | --strip-titles] [fileext]"
   echo "
 Remuxes all files ending in .fileext found in the current directory into a
 subdirectory '$outdir'. fileext defaults to 'mkv'.
@@ -37,6 +39,9 @@ a sanitized version of the option file (sans input and output filespecs) is
 passed to mkvmerge for each video file. Header metadata has to match across
 files for this to work, and an according safeguard check is done. Also, if an
 option file is present, fileext can be determined automagically.
+
+The -t parameter causes all processed video files to be stripped of their
+title fields.
 
 Without an option file, a plain batch convert/remux without verification or
 altering of file metadata is done.
@@ -128,6 +133,9 @@ processfiles () {
   local numfiles=$(countfiles)
   local c="0"
 
+  local fb
+  local of
+
   mkdir -p $outdir
 
   for f in *.$ext; do
@@ -136,8 +144,9 @@ processfiles () {
     echo
     
     fb=$(basename "$f" .$ext)
+    of="$outdir/$fb.mkv"
     mkvmerge --identify "$f"
-    mkvmerge --output "$outdir/$fb.mkv" $opts "$f"
+    mkvmerge --output "$of" $opts "$f"
 
     # Some error checking, just in case
     if [ "$?" -ne "0" ]; then
@@ -147,7 +156,10 @@ processfiles () {
       rm -f $tmpfile
       exit 1
     fi
-    
+
+    # mkvpropedit returns nonzero so it goes below the error check
+    [ "$stripopts" ] && mkvpropedit "$of" $stripopts
+
     echo
   done
 
@@ -163,8 +175,10 @@ processfiles () {
 #### MAIN ####
 
 commandexists "mkvmerge" "Please install mkvtoolnix."
+commandexists "mkvpropedit" "Please install mkvtoolnix."
 commandexists "sed" "Sed is love, sed is life."
 
+# TODO: Implement a parameter shifter.
 if [ "$1" ]; then
   case $1 in
     "--help" | "-h" )
@@ -177,6 +191,10 @@ if [ "$1" ]; then
       scanheaders "Metadata is not consistent across files. Try wapasplit for a multipass remux."
 
       exit 0
+      ;;
+    "--strip-titles" | "-t")
+      stripopts="--delete title"
+      [ "$2" ] && { ext="$2" && forcedext=$ext; }
       ;;
     *)
       ext="$1"
