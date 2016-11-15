@@ -122,7 +122,7 @@ processfiles () {
     echo "Copying/moving to subdirectory '$dirname'"
     mkdir -p $dirname
 
-    $fileopcmd $f $dirname/
+    $fileopcmd "$f" $dirname/
     [ "$?" -ne "0" ] && { echo "Error on copy/move. Aborting." && echo && exit 1; }
 
     echo
