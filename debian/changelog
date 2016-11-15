@@ -1,3 +1,11 @@
+wapamux-tools (0.4~1.gbpb44bd4) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @b44bd4662587c5aff216d0571a9ce35b1fd4d8ff **
+
+  * UNRELEASED
+
+ -- Dennis Murczak <lordtoran@users.noreply.github.com>  Tue, 15 Nov 2016 19:29:04 +0100
+
 wapamux-tools (0.3) yakkety; urgency=medium
 
   * Bumping version to 0.3
