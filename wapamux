@@ -124,6 +124,42 @@ scanheaders () {
   echo
 }
 
+processfiles () {
+  local numfiles=$(countfiles)
+  local c="0"
+
+  mkdir -p $outdir
+
+  for f in *.$ext; do
+
+    c=$(($c+1))
+    echo "Processing ($c/$numfiles): $f"
+    echo
+    
+    fb=$(basename "$f" .$ext)
+    mkvmerge --identify "$f"
+    mkvmerge --output "$outdir/$fb.mkv" $opts "$f"
+
+    # Some error checking, just in case
+    if [ "$?" -ne "0" ]; then
+      echo "There was a problem with mkvmerge. Aborting."
+      echo
+
+      rm -f $tmpfile
+      exit 1
+    fi
+    
+    echo
+  done
+
+  rm -f $tmpfile
+
+  echo "All done!"
+  echo
+
+  exit 0
+}
+
 
 #### MAIN ####
 
@@ -208,27 +244,4 @@ if [ -f $optsfile ]; then
   esac
 fi
 
-mkdir -p $outdir
-
-for f in *.$ext; do
-
-  fb=$(basename "$f" .$ext)
-  mkvmerge --identify "$f"
-  mkvmerge --output "$outdir/$fb.mkv" $opts "$f"
-
-  # Some error checking, just in case
-  if [ "$?" -ne "0" ]; then
-    echo "There was a problem with mkvmerge. Aborting."
-    echo
-
-    rm -f $tmpfile
-    exit 1
-  fi
-  
-  echo
-done
-
-rm -f $tmpfile
-
-echo "All done!"
-echo
+processfiles
