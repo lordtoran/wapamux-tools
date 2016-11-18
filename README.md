@@ -114,6 +114,25 @@ characters around or next to episode numbers, for example if a
 (typographically correct) dash is used in place of a minus sign. Filename
 matching issues should be reported directly to tvnamer's issue tracker[[4]].
 
+*wapaname defaults to English episode names when I force a series name or ID*
+
+tvnamer behaves like this when no language is set in its configuration. You
+can create a default configuration file using
+
+    mkdir -p ~/.config/tvnamer && tvnamer -s ~/.config/tvnamer/tvnamerrc
+
+wapaname will always use that file as a tvnamer configuration if it exists.
+Minimal example file:
+
+    {
+        "language": "de", 
+        "search_all_languages": true, 
+        "order": "dvd" 
+    }
+
+Here, German is defined as the default language and episode order is set to
+DVD order instead of the default “first aired” order.
+
 
 [1]: https://github.com/dbr/tvnamer
 
