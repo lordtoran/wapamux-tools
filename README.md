@@ -133,6 +133,15 @@ Minimal example file:
 Here, German is defined as the default language and episode order is set to
 DVD order instead of the default “first aired” order.
 
+*wapaname automatically selects the English dub of a series even when the
+language code is set in the configuration file*
+
+Try passing the series name and ID directly to wapaname, as in:
+
+    wapaname "Some anime series" 123456
+
+This should make tvnamer auto-select the correct dub in most cases.
+
 
 [1]: https://github.com/dbr/tvnamer
 
