@@ -213,6 +213,9 @@ fi
 
 filesexist
 
+# Renice ourself to bg priority.
+renice -n 19 $$ > /dev/null
+
 echo "Preparing to remux all .$ext files to a subdirectory. Continue [Y/n/?]?"
 read -r ans
 
