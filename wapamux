@@ -240,7 +240,11 @@ if [ -f $optsfile ]; then
 
   # Temporarily filter filenames and UI language out of the options.
   # This will fail with trailing spaces, as it matches to the end of line.
-  sed -e '/--ui-language$/,+1d' -e '/--output$/,+1d' -e '/--title$/,+1d' -e '/^($/,+2d' $optsfile > $tmpfile
+  sed -e '/--ui-language$/,+1d
+          /--output$/,+1d
+          /--title$/,+1d
+          /^($/,+2d
+          /--track-name$/,+1d' $optsfile > $tmpfile
 
   scanheaders "Cannot apply options; consider doing multiple passes instead. Exiting."
 
