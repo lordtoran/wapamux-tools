@@ -144,7 +144,7 @@ This should make tvnamer auto-select the correct dub in most cases.
 
 **My desktop tends to lag a lot while wapamux processes very large files**
 
-Since 0.3.5, wapamaux renices itself to 19 (lowest process priority) by
+Since 0.3.5, wapamux renices itself to 19 (lowest process priority) by
 default, as its primary purpose is processing large file batches in the
 background. Depending on how your operating system's kernel was configured,
 you may still have a responsive user interface, or less so. If you run Linux
