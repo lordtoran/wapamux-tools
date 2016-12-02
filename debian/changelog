@@ -1,10 +1,12 @@
-wapamux-tools (0.4~1.gbpb44bd4) UNRELEASED; urgency=medium
+wapamux-tools (0.3.5) yakkety; urgency=medium
 
-  ** SNAPSHOT build @b44bd4662587c5aff216d0571a9ce35b1fd4d8ff **
+  * Implementing -t switch for stripping title fields on remux.
+  * Updating FAQ
+  * FAQ update
+  * Bugfix: Don't touch track names.
+  * Optimization: Run with background priority.
 
-  * UNRELEASED
-
- -- Dennis Murczak <lordtoran@users.noreply.github.com>  Tue, 15 Nov 2016 19:29:04 +0100
+ -- Dennis Murczak <lordtoran@users.noreply.github.com>  Fri, 02 Dec 2016 18:51:32 +0100
 
 wapamux-tools (0.3) yakkety; urgency=medium
 
@@ -28,7 +30,6 @@ wapamux-tools (0.3) yakkety; urgency=medium
 
 wapamux-tools (0.2ubuntu1) yakkety; urgency=medium
 
-  [ lordtoran ]
   * Initial commit
   * Initial commit
   * Some markdown hacking
@@ -41,7 +42,5 @@ wapamux-tools (0.2ubuntu1) yakkety; urgency=medium
   * DONE: More error checking, bugfix for tempfile not removed when aborting late
   * FAQ expanded
   * Adding Debian packaging and a NEWS file.
-
-  [ Dennis Murczak ]
 
  -- Dennis Murczak <lordtoran@users.noreply.github.com>  Wed, 09 Nov 2016 13:54:39 +0100

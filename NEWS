@@ -1,3 +1,11 @@
+2016-12-02  Dennis Murczak  <lordtoran@users.noreply.github.com>
+
+    * 0.3.5 alpha release.
+    * Bugfix release.
+    * Bugfix: Don't touch track names when remuxing with wapamux.
+    * wapamux: New -t switch for stripping the title fields when remuxing.
+    * wapamux: Run with background priority (nice level 19) by default.
+
 2016-11-15  Dennis Murczak  <lordtoran@users.noreply.github.com>
 
     * 0.3 alpha release.
