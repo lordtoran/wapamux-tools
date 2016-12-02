@@ -142,6 +142,37 @@ Try passing the series name and ID directly to wapaname, as in:
 
 This should make tvnamer auto-select the correct dub in most cases.
 
+**My desktop tends to lag a lot while wapamux processes very large files**
+
+Since 0.3.5, wapamaux renices itself to 19 (lowest process priority) by
+default, as its primary purpose is processing large file batches in the
+background. Depending on how your operating system's kernel was configured,
+you may still have a responsive user interface, or less so. If you run Linux
+and get stalls while processing batches of very large video files, you might
+try trading some throughput for interactivity by temporarily switching to the
+*deadline* I/O scheduler.
+
+First note down the currently set scheduler. Replace `sda` with the disk you
+are running the batch on.
+
+    cat /sys/block/sda/queue/scheduler
+
+You will get something like
+
+    noop deadline [cfq]
+
+This means you are running the CFQ scheduler which is very likely also the
+default. Switch to the deadline scheduler using
+
+    sudo sh -c "echo deadline > /sys/block/sda/queue/scheduler"
+
+You may want to double-check using the aforementioned command:
+
+    noop [deadline] cfq
+
+Yup. Note that the block driver may have to finish any outstanding requests
+first before you see an improvement.
+
 
 [1]: https://github.com/dbr/tvnamer
 
