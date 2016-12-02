@@ -241,8 +241,9 @@ if [ -f $optsfile ]; then
   
   opts="@$tmpfile"
 
-  # Temporarily filter filenames and UI language out of the options.
-  # This will fail with trailing spaces, as it matches to the end of line.
+  # Temporarily filter filenames, name tags, UI language etc. out of the
+  # options. This will fail with trailing spaces, as it matches to the end of
+  # line.
   sed -e '/--ui-language$/,+1d
           /--output$/,+1d
           /--title$/,+1d
