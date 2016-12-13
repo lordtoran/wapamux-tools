@@ -173,6 +173,15 @@ You may want to double-check using the aforementioned command:
 Yup. Note that the block driver may have to finish any outstanding requests
 first before you see an improvement.
 
+**wapaname crashes when the directory name contains Unicode characters**
+
+This seems to be an issue with tvnamer that may or may not pertain to certain
+system configurations. You can try enforcing an ASCII-only representation of
+the series title by passing it as the first parameter to wapaname. You may get
+different or no matches though, or in the worst case every dub except the one
+you want if the Unicode title is the original title and the ASCII string is a
+redirect.
+
 
 [1]: https://github.com/dbr/tvnamer
 
