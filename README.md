@@ -103,7 +103,7 @@ creative pun.
 addition to setting header data?**
 
 wapamux uses mkvmerge as its backend so this is perfectly fine. The option
-file (series.opt) that keeps track of the changes is not touched except for
+file (muxopt.json) that keeps track of the changes is not touched except for
 filename sanitation required for batch mode.
 
 **wapaname errors out with “tvnamer: error: No valid files were supplied”**

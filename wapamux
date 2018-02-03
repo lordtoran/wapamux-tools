@@ -3,7 +3,7 @@
 # wapamux
 #
 # Remux all video files of a specific type found in the current directory into
-# a subdirectory. If a series.opt file is found in the current directory, a
+# a subdirectory. If a muxopt.json file is found in the current directory, a
 # sanitized version of it is passed to mkvmerge as an options file.
 #
 # Requires: mkvmerge (from the mkvtoolnix package), sed.
@@ -19,8 +19,8 @@ forcedext=
 
 opts=
 stripopts=
-optsfile="series.opt"
-tmpfile="$optsfile.~~~"
+optsfile="muxopt.json"
+tmpfile="~muxtemp.json"
 
 outdir="__converted__"
 
@@ -142,7 +142,7 @@ processfiles () {
     c=$(($c+1))
     echo "Processing ($c/$numfiles): $f"
     echo
-    
+
     fb=$(basename "$f" .$ext)
     of="$outdir/$fb.mkv"
     mkvmerge --identify "$f"
@@ -207,7 +207,7 @@ fi
 trap "rm -f $tmpfile; exit" HUP INT TERM
 
 if [ -f $optsfile ]; then
-  optsfileext=$(grep -A1 -e "^($" $optsfile | tr . \\n | tail -n1)
+  optsfileext=$(grep -A1 -e '"(",$' $optsfile | tr . \\n | tail -n1 | sed 's/",$//')
   [ -z "$forcedext" ] && [ -n "$optsfileext" ] && ext=$optsfileext
 fi
 
@@ -233,7 +233,7 @@ case $ans in
     ;;
 esac
 
-# If series.opt is present, assume the directory contains a series and header
+# If muxopt.json is present, assume the directory contains a series and header
 # scan the video files first.
 if [ -f $optsfile ]; then
   echo "$optsfile found. Assuming the directory contains a TV or anime series."
@@ -244,11 +244,11 @@ if [ -f $optsfile ]; then
   # Temporarily filter filenames, name tags, UI language etc. out of the
   # options. This will fail with trailing spaces, as it matches to the end of
   # line.
-  sed -e '/--ui-language$/,+1d
-          /--output$/,+1d
-          /--title$/,+1d
-          /^($/,+2d
-          /--track-name$/,+1d' $optsfile > $tmpfile
+  sed -e '/"--ui-language",$/,+1d
+          /"--output",$/,+1d
+          /"--title",$/,+1d
+          /"(",$/,+2d
+          /"--track-name",$/,+1d' $optsfile > $tmpfile
 
   scanheaders "Cannot apply options; consider doing multiple passes instead. Exiting."
 
