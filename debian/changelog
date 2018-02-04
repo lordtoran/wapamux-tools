@@ -1,3 +1,13 @@
+wapamux-tools (0.3.6) artful; urgency=medium
+
+  * Markdown/formatting fixes
+  * FAQ update
+  * Typo
+  * FAQ update
+  * Updating parser for new JSON based options file format.
+
+ -- Dennis Murczak <lordtoran@users.noreply.github.com>  Sun, 04 Feb 2018 20:41:25 +0100
+
 wapamux-tools (0.3.5) yakkety; urgency=medium
 
   * Implementing -t switch for stripping title fields on remux.
