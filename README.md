@@ -56,10 +56,10 @@ enforced. Should that fail too, a TVDB ID can additionally be given.
     wapamux [-s | --scan-headers] [fileext]
 
 Remuxes all files ending in `.fileext` found in the current directory into
-a single subdirectory of a hardcoded name. If an mkvmerge option file is
-present in the directory, it will be used for metadata tagging. `fileext`
-defaults to `mkv`. `-s` only does a scan for metadata consistency,
-just as it would before a remux with an option file.
+a single subdirectory of a hardcoded name. If an mkvmerge option file named
+`muxopt.json` is present in the directory, it will be used for metadata
+tagging. `fileext` defaults to `mkv`. `-s` only does a scan for metadata
+consistency, just as it would before a remux with an option file.
 
     wapasplit [-s | --scanonly] [fileext]
 
@@ -75,8 +75,8 @@ be created.
 
 In a common scenario `wapaname` would be called after naming the video
 files in a way that tvnamer can parse (one series/season per directory, which
-is named after the series, sNNeNN or NNxNN file numbering). The result would
-be numbered video files with episode names.
+is named after the series, `sNNeNN` or `NNxNN` file numbering). The result
+would be numbered video files with episode names.
 
 Next a metadata consistency check can be done using `wapasplit -s` or
 `wapamux -s`. If the metadata turns out inconsistent across files, one can
@@ -103,13 +103,13 @@ creative pun.
 addition to setting header data?**
 
 wapamux uses mkvmerge as its backend so this is perfectly fine. The option
-file (muxopt.json) that keeps track of the changes is not touched except for
+file (`muxopt.json`) that keeps track of the changes is not touched except for
 filename sanitation required for batch mode.
 
 **wapaname errors out with “tvnamer: error: No valid files were supplied”**
 
 Either you tried running the script on a movie, or tvnamer is unable to match
-the episode numbers in the filenames. This can sometimes happen with unicode
+the episode numbers in the file names. This can sometimes happen with unicode
 characters around or next to episode numbers, for example if a
 (typographically correct) dash is used in place of a minus sign. Filename
 matching issues should be reported directly to tvnamer's issue tracker[[4]].
