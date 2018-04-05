@@ -92,7 +92,7 @@ processed file during remuxing.
 
 ### FAQ ###
 
-**“wapamux”?**
+**“wapamux” (「ワパムケス」)?**
 
 It is an allusion to “wapanese”, a somewhat derogatory term for a japanophile
 person with limited knowledge and a warped notion of Japanese culture and
