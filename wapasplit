@@ -61,6 +61,15 @@ countfiles () {
   ls -l *.$ext | wc -l
 }
 
+makeMKVck () {
+  echo $(
+  mkvmerge --identify --identification-format json "$1" |
+  grep -E '"codec": |"number": |"language": |"type": ' |
+  cksum |
+  cut -f 1 -d " "
+  )
+}
+
 scanheaders () {
   local mkvck=
   local chklist=
@@ -75,8 +84,7 @@ scanheaders () {
   for f in *.$ext; do
     echo "Obtaining metadata: $f"
 
-    mkvck=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ' | cksum | cut -f 1 -d " ")
-    
+    mkvck=$(makeMKVck "$f")
     [ "$?" -ne "0" ] && { echo "Not a supported video file: $f" && echo && exit 1; }
 
     chklist=$(echo $chklist; echo $mkvck)
@@ -121,8 +129,7 @@ processfiles () {
     echo
 
     mkvmerge --identify "$f"
-    mkvck=$(mkvmerge --identify --identification-format json "$f" | grep -E '"codec": |"number": |"language": |"type": ' | cksum | cut -f 1 -d " ")
-
+    mkvck=$(makeMKVck "$f")
     [ "$?" -ne "0" ] && { echo "There was a problem with mkvmerge. Aborting." && echo && exit 1; }
 
     dirname="__"$mkvck"__"
