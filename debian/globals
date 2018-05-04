@@ -3,8 +3,8 @@
 APPNAME="wapamux-tools"
 APPVER="0.3.6"
 
-MAINTAINERADDY="lordtoran@users.noreply.github.com"
-HOMEPAGE="https://github.com/lordtoran/wapamux-tools"
+MAINTAINERADDY="lortordermur@users.noreply.github.com"
+HOMEPAGE="https://github.com/lortordermur/wapamux-tools"
 
 DEPENDS="mkvtoolnix, tvnamer, rsync"
 
