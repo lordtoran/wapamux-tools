@@ -161,6 +161,9 @@ processfiles () {
     [ "$stripopts" ] && mkvpropedit "$of" $stripopts
 
     echo
+    
+    # Force writing of the file's cached data to storage
+    sync "$of"
   done
 
   rm -f $tmpfile
@@ -177,11 +180,12 @@ processfiles () {
 commandexists "mkvmerge" "Please install mkvtoolnix."
 commandexists "mkvpropedit" "Please install mkvtoolnix."
 commandexists "sed" "Sed is love, sed is life."
+commandexists "sync" "Please install some implementation of the Unix 'sync' command."
 
 # TODO: Implement a parameter shifter.
 if [ "$1" ]; then
   case $1 in
-    "--help" | "-h" )
+    "--help" | "-h")
       usage
       ;;
     "--scan-headers" | "-s")
